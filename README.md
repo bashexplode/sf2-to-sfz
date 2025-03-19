@@ -38,7 +38,7 @@ If you want a feature, add it and make a pull request.
 Install `sf2utils` using pip:
 
 ```bash
-pip install sf2utils
+python -m pip install sf2utils
 ```
 
 ## Usage
