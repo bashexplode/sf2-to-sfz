@@ -82,10 +82,10 @@ Each SFZ file contains region definitions with tags like:
 
 ```sfz
 <control>
-default_path=SC-22 Instrument1 Samples
+default_path=mySound Instrument1 Samples
 
 <region>
-sample=SC-22-Instrument1-TrueSampleName.wav
+sample=mySound-Instrument1-TrueSampleName.wav
 pitch_keycenter=60 tune=350
 lokey=21
 hikey=108
