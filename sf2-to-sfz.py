@@ -466,7 +466,7 @@ def generate_sfz_for_preset(preset, sf2, output_base, base_folder):
                     #f.write(f"loop_start={sample.start_loop}\n")
                     f.write(f"loop_end={bag.cooked_loop_end - 1}\n")
                     #f.write(f"loop_end={sample.end_loop}\n")
-                    f.write("loop_crossfade=0.01\n")
+                    #f.write("loop_crossfade=0.01\n")
                 f.write("\n")
     print(f"SFZ file generated: {sfz_filename}")
 
