@@ -6,7 +6,7 @@ import re
 import wave
 import sys
 import logging
-import re
+import math
 
 from sf2utils.sf2parse import Sf2File
 from sf2utils.generator import Sf2Gen
@@ -192,6 +192,7 @@ sf2oper_to_sfz_map = {
 sf2_to_sfz_map = {
     "volume_envelope_attack": "ampeg_attack",
     "volume_envelope_release": "ampeg_release",
+    "volume_envelope_sustain": "ampeg_sustain",
     "volume_envelope_decay": "ampeg_decay",
     "volume_envelope_attenuation": "volume",
     "volume_envelope_hold": "ampeg_hold",
@@ -244,6 +245,9 @@ def format_operator_parameters(generators, mapping):
                     # originally mapped to pitcheg_attack but the SF2 value also is fileg_attack for SFZ
                     if sfz_tag == "pitcheg_attack":
                         lines.append(f"fileg_attack={gen_val}")
+
+                    if sfz_tag == "fileg_sustain":
+                        gen_val = 100. * math.pow(10, -gen_val / 20)
                     
                     lines.append(f"{sfz_tag}={gen_val}")
     return lines
@@ -278,8 +282,11 @@ def format_bag_parameters(bag, mapping):
                                 continue
                         lines.append(f"{sfz_tag[0]}={val[0]} {sfz_tag[1]}={val[1]}")
                 else:
+                    if attr == "volume_envelope_sustain":
+                        val = 100. * math.pow(10, -val / 20)
                     lines.append(f"{sfz_tag}={val}")
-
+    for mod in bag.mods:
+        print(mod)
     gen_params = format_operator_parameters(bag.gens, sf2oper_to_sfz_map)
     if gen_params is not None:
         lines.extend(gen_params)
@@ -443,7 +450,7 @@ def generate_sfz_for_preset(preset, sf2, output_base, base_folder):
                 if pk is not None:
                     if transpose is not None:
                         f.write(f"pitch_keycenter={pk}\ntranspose={transpose}\n")
-                    if tune is not None:
+                    elif tune is not None:
                         f.write(f"pitch_keycenter={pk} tune={tune}\n")
                     else:
                         f.write(f"pitch_keycenter={pk}\n")
@@ -457,7 +464,7 @@ def generate_sfz_for_preset(preset, sf2, output_base, base_folder):
                     f.write(f"loop_mode={loop_mode}\n")
                     f.write(f"loop_start={bag.cooked_loop_start}\n")
                     #f.write(f"loop_start={sample.start_loop}\n")
-                    f.write(f"loop_end={bag.cooked_loop_end}\n")
+                    f.write(f"loop_end={bag.cooked_loop_end - 1}\n")
                     #f.write(f"loop_end={sample.end_loop}\n")
                     f.write("loop_crossfade=0.01\n")
                 f.write("\n")
